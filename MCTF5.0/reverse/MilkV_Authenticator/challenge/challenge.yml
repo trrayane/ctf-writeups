@@ -1,0 +1,11 @@
+challenge:
+  name: "Milk-V Authenticator"
+  author: "red0xff"
+  category: reverse # must match parent folder
+  difficulty: medium # easy | medium | hard | extreme
+  description: |
+    This binary requests a flag. Can you find the correct input?
+  wave: 1 # deployment wave
+  need_deploy: false # true if it needs hosting
+  flags:
+    - { flag: "mctf{4lGebra_s01ves_L0ts__Of_pr0blems}", case_sensitive: true }

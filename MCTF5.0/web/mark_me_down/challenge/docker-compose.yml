@@ -1,0 +1,37 @@
+services:
+  renderer:
+    build: .
+    expose:
+      - "3000"
+    environment:
+      - RENDER_OUTPUT_DIR=/tmp/latex
+      - FILE_TTL_MINUTES=30
+      - CLEANUP_INTERVAL_MINUTES=30
+      - RENDER_URL_PREFIX=/renders
+    volumes:
+      - render-cache:/tmp/latex
+    restart: unless-stopped
+    mem_limit: 512m
+    cpus: 1.0
+    pids_limit: 256
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1  
+
+  nginx:
+    build: ./nginx
+    depends_on:
+      - renderer
+    ports:
+      - "10050:80"
+    volumes:
+      - render-cache:/var/www/renders:ro
+    restart: unless-stopped
+    mem_limit: 64m
+    cpus: 0.5
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1  
+
+volumes:
+  render-cache:

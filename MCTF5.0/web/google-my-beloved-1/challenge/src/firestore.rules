@@ -1,0 +1,65 @@
+rules_version = '2';
+
+// Admit — MCTF participant admissions
+// Maintained by Zeref (dept lead). Staff use Firebase Auth; anon sign-in is off.
+// ops_notes: "Reviewed before launch — looks fine." — z.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Public teams roster (read-only for anyone signed in).
+    match /teams/{teamId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // User profiles. Own-read only. Created server-side on first signup; users
+    // may update their displayName/bio only.
+    match /users/{userId} {
+      allow read:   if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId
+                    && request.resource.data.keys().hasOnly(['email','displayName','createdAt','role']);
+      allow update: if request.auth != null && request.auth.uid == userId
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['displayName','bio']);
+      allow delete: if false;
+    }
+
+    // Applications submitted by MCTF candidates. Reviewers (staff with role=reviewer
+    // or role=admin) can read; candidates can read/update their own.
+    match /applications/{appId} {
+      allow read:   if request.auth != null
+                    && (resource.data.submitterUid == request.auth.uid
+                        || request.auth.token.role == 'reviewer'
+                        || request.auth.token.role == 'admin');
+      allow create: if request.auth != null
+                    && request.resource.data.submitterUid == request.auth.uid;
+      allow update: if request.auth != null
+                    && (resource.data.submitterUid == request.auth.uid
+                        || request.auth.token.role == 'reviewer'
+                        || request.auth.token.role == 'admin');
+      allow delete: if false;
+    }
+
+    // Promotion eligibility. A reviewer may request elevation to admin by
+    // creating a record (initially not-approved). Once a senior admin flips
+    // `approved` to true, the `requestPromotion` cloud function will stamp
+    // the admin claim on the user.
+    match /promotion_eligibility/{userId} {
+      allow read:   if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId
+                    && request.resource.data.keys().hasOnly(['approved','requestedAt'])
+                    && request.resource.data.approved == false;
+      // NOTE(z): "update rule needs tightening — track in ADMIT-412"
+      allow update: if request.auth != null && request.auth.uid == userId;
+      allow delete: if false;
+    }
+
+    // Sealed verdict archive — the committee's private decisions.
+    // Admin claim required.
+    match /sealed_verdicts/{docId} {
+      allow read:  if request.auth != null && request.auth.token.role == 'admin';
+      allow write: if false;
+    }
+  }
+}

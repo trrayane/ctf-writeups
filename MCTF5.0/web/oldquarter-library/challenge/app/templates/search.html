@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Search &middot; {{ site_name }}{% endblock %}
+{% block content %}
+<header class="page-head">
+    <h1>Search the catalogue</h1>
+</header>
+<form action="/search" method="get" class="search-bar" role="search">
+    <input type="search" name="q" value="{{ q }}" placeholder="Title, author, or ISBN" autofocus>
+    <button type="submit">Search</button>
+</form>
+
+{% if q %}
+    <p class="muted">{{ results|length }} result{{ '' if results|length == 1 else 's' }} for &ldquo;{{ q }}&rdquo;.</p>
+    {% if results %}
+    <ul class="result-list">
+        {% for b in results %}
+        <li>
+            <a href="/book/{{ b.id }}">
+                <strong>{{ b.title }}</strong>
+                <em>{{ b.author }}</em>
+                <span class="badge">{{ b.genre }}</span>
+                <span class="muted">{{ b.year }}</span>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty">No matches. Try a shorter query, or browse the <a href="/catalog">full catalogue</a>.</p>
+    {% endif %}
+{% else %}
+<p class="muted">Enter a title, author, or ISBN to begin.</p>
+{% endif %}
+{% endblock %}

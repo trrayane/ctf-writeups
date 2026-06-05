@@ -1,0 +1,30 @@
+challenge:
+  name: "CUB3" # Challenge name
+
+  author: "$h3rL0ck" # Author of the challenge
+
+  category: web # Category of the challenge, can be one of: web, pwn, crypto, reverse, misc, forensics, osint
+
+  difficulty: easy # Difficulty of the challenge, can be one of: easy, medium, hard, extreme
+
+  description: Can you solve a randomly scrambled Rubik's cube? # Description of the challenge
+
+  wave: 1 # Deployment wave number
+
+  flags: # Flags for the challenge
+    - { flag: "mctf{k3y5tr0k35_b4tt13_w0n_1n_m1111s3c0nd55555}", case_sensitive: true } # Rubik's cube CTF flag
+
+  need_deploy: true # Whether the challenge needs to be deployed or not
+
+  links:  []
+
+# This Part does not concern challenges authors, it is for infrastructure team to deploy the challenge, it can be left empty for challenges that do not need deployment
+
+deploy:
+ subdomain: "cub3" # Subdomain for the challenge, used for deployment
+ port: null # Port for the challenge, used for deployment
+ internal_port: 8000 # Internal container port for dynamic instances
+ dynamic_instances: true # Whether this challenge uses dynamic instances
+ tcp: false # Whether the challenge uses TCP or HTTP, true for TCP, false for HTTP
+ noSsl: false # Indicates that this challenge must not use SSL
+

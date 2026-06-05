@@ -1,0 +1,11 @@
+services:
+  admit:
+    build: .
+    container_name: admit
+    restart: unless-stopped
+    ports:
+      - "10030:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - FIREBASE_PROJECT=admit-mctf

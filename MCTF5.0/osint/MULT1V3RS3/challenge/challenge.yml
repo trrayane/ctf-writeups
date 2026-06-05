@@ -1,0 +1,25 @@
+challenge:
+  name: "MULT1V3RS3" # Challenge name
+
+  author: "0k4r1n" # Author of the challenge
+
+  category: osint # Category of the challenge, can be one of: web, pwn, crypto, reverse, misc, forensics, osint
+
+  difficulty: medium # Difficulty of the challenge, can be one of: easy, medium, hard, extreme
+
+  description: My friend was amazed by the cybersecurity event that he attended, which was the biggest one ever, and he really wanted to join this community. He told me to search for him, he called himself mr_br0wn # Description of the challenge
+
+  wave: 2 # Deployment wave number
+
+  flags: # Flags for the challenge
+    - { flag: "mctf{U_F0und_MY_M3T4_V3RS3_GJJJJ!!!!}", case_sensitive: true } # Example flag, case_sensitive indicates if the flag is case sensitive
+
+  need_deploy: false # Whether the challenge needs to be deployed or not
+# This Part does not concern challenges authors, it is for infrastructure team to deploy the challenge, it can be left empty for challenges that do not need deployment
+
+# deploy:
+#   subdomain: "test-challenge" # Subdomain for the challenge, used for deployment
+#   port: 10000 # Port for the challenge, used for deployment
+#   tcp: false # Whether the challenge uses TCP or HTTP, true for TCP, false for HTTP
+#   noSsl: false # Indicates that this challenge must not use SSL
+

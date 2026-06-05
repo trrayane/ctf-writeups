@@ -1,0 +1,7 @@
+services:
+  library:
+    build: .
+    container_name: oldquarter-library
+    ports:
+      - "10060:80"
+    restart: unless-stopped

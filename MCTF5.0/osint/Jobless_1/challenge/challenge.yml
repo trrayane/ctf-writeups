@@ -1,0 +1,32 @@
+challenge:
+  name: "J*bless_1" # Challenge name
+
+  author: "5T4Y_H3R3" # Author of the challenge
+
+  category: osint # Category of the challenge, can be one of: web, pwn, crypto, reverse, misc, forensics, osint
+
+  difficulty: medium # Difficulty of the challenge, can be one of: easy, medium, hard, extreme
+
+  description: >
+    Stay the jobless, an Algerian zawali who was living the horrors of being unemployed. He was known around his circle as the ultimate failure, always complaining about his situation without doing anything to make a change. After some time, his situation surprisingly changed out of nowhere. The reaction of his neighbors and friends varied, some started seeing him as an inspiration, while others couldn’t stand it (chl9mhoum l7ssd). Nonetheless, both parties are really eager to know how he’s come that far.
+    Can you help them unravel the truth by tracking his journey?
+
+    Important Note: The challenge has no relation with the Author, osinting him won't get you anywhere.
+ # Description of the challenge
+
+  wave: 1 # Deployment wave number
+
+  flags: # Flags for the challenge
+    - { flag: "mctf{Wh4t_4n_4m4z1ng_b00k_1n_7h3_m1ddl3_0f_n0wh3r3!}", case_sensitive: true } # Example flag, case_sensitive indicates if the flag is case sensitive
+
+  need_deploy: false # Whether the challenge needs to be deployed or not
+
+  links: [] # Link to the challenge , external assets...
+
+# This Part does not concern challenges authors, it is for infrastructure team to deploy the challenge, it can be left empty for challenges that do not need deployment
+
+# deploy:
+#   subdomain: "test-challenge" # Subdomain for the challenge, used for deployment
+#   port: 10000 # Port for the challenge, used for deployment
+#   tcp: false # Whether the challenge uses TCP or HTTP, true for TCP, false for HTTP
+#   noSsl: false # Indicates that this challenge must not use SSL

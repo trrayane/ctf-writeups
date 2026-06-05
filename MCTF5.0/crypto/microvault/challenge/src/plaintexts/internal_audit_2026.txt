@@ -1,0 +1,92 @@
+A note from the audit team. Late 2026. Filed under
+internal-only and not for distribution beyond the
+people already on this thread.
+
+The cryptography team has asked the audit team to
+confirm that Microvault remains functional as of the
+close of the quarter, and to flag any operational
+concerns that surfaced during the walkthrough. This
+memo is the answer to both questions, written in the
+order the questions were asked, with as little
+ceremony as we could manage. The longer the document
+the less anyone reads it.
+
+Microvault is functional. The on-call engineer ran
+through the daily checklist with the audit team and
+nothing surprised either party. Files round-trip,
+the MCP debug interface answers within milliseconds,
+the access log shows the expected pattern of nobody
+reading anything. We have no doubt the service is
+operationally healthy on the day this memo was filed.
+
+The first concern is the standing one. The encryption
+primitive that protects files at rest is maintained
+in-house by the cryptography team and has not been
+reviewed by anyone outside the team. The cryptography
+team has acknowledged this concern in every prior
+audit cycle, and the recommendation to migrate to a
+vetted authenticated-encryption mode (such as AES-GCM
+or ChaCha20-Poly1305) appears in every report we have
+filed against this service. The current cycle is no
+exception. We continue to recommend migration. We
+note again that the cryptography team has accepted
+the risk pending migration and that the recommendation
+should not be read as an ongoing dispute.
+
+The second concern is operational. The MCP debug
+interface was inadvertently bound to a public network
+interface during the most recent deployment. The team
+responsible has been notified. Until the binding is
+corrected, the interface should be treated as
+publicly reachable. The audit team verified that the
+interface exposes only the two read-only tools that
+the runbook documents (asset enumeration and asset
+retrieval) and that nothing else is reachable through
+that surface. Earlier revisions of the service did
+expose a third diagnostic tool that disclosed
+implementation details about the encryption layer;
+the cryptography team removed that tool prior to
+this audit.
+
+The third item is not so much a concern as an
+observation. The keying schedule that Microvault uses
+for encryption-at-rest binds protected artefacts to
+one another in a chain. The cryptography team has
+confirmed that recovery of any single artefact's
+plaintext is sufficient to compute the keying
+parameters of the artefact downstream of it in that
+chain. The audit team flags this as a blast-radius
+concern but does not, at this audit, recommend a
+specific change. We expect to revisit this in a
+future cycle once the migration to a vetted primitive
+has been planned in detail.
+
+The fourth item is recommendations carried over from
+prior audits. Per-file key derivation (HKDF from a
+master secret and a file identifier), integrity
+protection on every artefact (MAC at rest and in
+transit), and a formal cipher-review process for any
+future homegrown primitives. None of these have moved
+since the last audit. We continue to recommend them.
+
+Action items, by owner: DevOps lead to rebind the MCP
+interface to loopback by end of Q4; cryptography lead
+to begin the migration design by the start of Q1; the
+audit team to schedule the follow-up cycle for Q2 of
+the next year. The action items above are the only
+items that the audit team will track between cycles.
+Anything else is operational.
+
+A closing note. The audit team thanks the DevOps and
+cryptography teams for their cooperation during this
+cycle. No issues were observed with willingness to
+provide source, configuration, or context. The
+recommendations above are made in good faith and
+should not be interpreted as a criticism of the
+engineering work performed.
+
+The next audit of Microvault is scheduled for Q2 of
+the next year and will revisit the recommendations
+above.
+
+-- end of memo --

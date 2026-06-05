@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Patron sign in &middot; {{ site_name }}{% endblock %}
+{% block content %}
+<section class="auth">
+    <h1>Patron sign in</h1>
+    <p class="muted">Sign in to reserve books, manage holds, and renew loans.</p>
+    {% if error %}<div class="alert">{{ error }}</div>{% endif %}
+    <form method="post" action="/login" class="auth-form">
+        <label>
+            <span>Library card number</span>
+            <input type="text" name="card" autocomplete="username" required>
+        </label>
+        <label>
+            <span>PIN</span>
+            <input type="password" name="pin" autocomplete="current-password" required>
+        </label>
+        <button type="submit" class="btn">Sign in</button>
+    </form>
+    <p class="muted small">Forgotten your PIN? Visit the front desk with photo ID.</p>
+</section>
+{% endblock %}

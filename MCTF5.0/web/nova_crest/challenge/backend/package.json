@@ -1,0 +1,38 @@
+{
+  "name": "challenge",
+  "version": "1.0.0",
+  "description": "a web challenge",
+  "license": "MIT",
+  "author": "COn4n",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "antlr4": "antlr4ng -Dlanguage=TypeScript -visitor -no-listener -o src/tools/QMongo/generated src/tools/QMongo/grammar/QMongo.g4",
+    "prebuild": "npm run antlr4 && npm run bundle && npm run obfuscate",
+    "build": "tsc",
+    "bundle": "esbuild src/tools/QMongo/index.ts --bundle --outfile=public/assets/index-Mn8QaZ5r.js --platform=browser --format=iife --global-name=Validator --minify",
+    "obfuscate": "javascript-obfuscator public/assets/  --output public/obfuscated   --compact true   --control-flow-flattening true   --dead-code-injection true   --debug-protection true   --disable-console-output true   --identifier-names-generator hexadecimal   --numbers-to-expressions true   --self-defending true   --string-array true   --string-array-encoding base64   --string-array-wrappers-count 2   --string-array-wrappers-chained-calls true   --string-array-wrappers-type function",
+    "postbuild": "rm public/assets/*.js && mv public/obfuscated/* public/assets/ && rm -r public/obfuscated",
+    "start": "node dist/index.js",
+    "test": "tsx --test tests/**/*.test.ts",
+    "test:verbose": "tsx --test tests/**/*.test.ts 2>&1"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^9.9.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "antlr4ng": "^3.0.4",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "8.8.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^20.19.33",
+    "antlr4ng-cli": "^2.0.0",
+    "esbuild": "^0.27.4",
+    "javascript-obfuscator": "^5.3.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
+  }
+}

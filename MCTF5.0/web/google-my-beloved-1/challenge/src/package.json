@@ -1,0 +1,15 @@
+{
+  "name": "admit",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Admit — MCTF admissions platform (Firebase emulator wrapper)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "http-proxy-middleware": "^2.0.9",
+    "firebase-admin": "^12.6.0"
+  }
+}

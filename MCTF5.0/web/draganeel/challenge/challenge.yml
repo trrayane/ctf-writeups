@@ -1,0 +1,29 @@
+challenge:
+  name: "Draganeel"
+
+  author: "Zeref"
+
+  category: web
+
+  difficulty: extreme
+
+  description: |-
+    A book Z. left in your inbox. He says it's the last one.
+
+    To kill what he made, you must let it kill you. The name is in the dying.
+
+  wave: 2
+
+  flags:
+    - { flag: "mctf{ETHER10U5_N4T5U_DR4GN33L}", case_sensitive: true }
+
+  need_deploy: true
+
+  links: []
+
+deploy:
+  subdomain: "draganeel"
+  port: 10020
+  dynamic_instances: false
+  tcp: false
+  noSsl: false

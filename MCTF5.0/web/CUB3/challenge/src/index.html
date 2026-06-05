@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rubik's Cube // CTF v3</title>
+<style>
+  :root {
+    --bg: #0b0d10;
+    --panel: #13161b;
+    --border: #1f242c;
+    --text: #e6e9ef;
+    --muted: #7c8591;
+    --accent: #6cf7c6;
+    --danger: #ff6b6b;
+    --warn: #ffcc66;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--bg); color: var(--text);
+    font-family: var(--mono);
+    overflow: hidden;
+  }
+  #app {
+    display: grid;
+    grid-template-rows: auto 1fr auto auto;
+    height: 100vh;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+  }
+  header h1 {
+    margin: 0; font-size: 14px; letter-spacing: 2px;
+    color: var(--muted); font-weight: 500; text-transform: uppercase;
+  }
+  header h1 span { color: var(--accent); }
+  header h1 .v { color: var(--warn); font-size: 11px; margin-left: 6px; letter-spacing: 1px; }
+  .status {
+    display: flex; gap: 18px; align-items: center;
+    font-size: 13px;
+  }
+  .status .label { color: var(--muted); margin-right: 6px; }
+  .status .value { color: var(--text); }
+  #timer.value { color: var(--accent); font-weight: 600; min-width: 48px; display: inline-block; }
+  #timer.warn { color: var(--warn); }
+  #timer.crit { color: var(--danger); }
+
+  #canvas-wrap {
+    position: relative;
+    background: radial-gradient(1000px 600px at 50% 50%, #151a20 0%, #0b0d10 70%);
+    overflow: hidden;
+  }
+  #canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+
+  .overlay {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 16px;
+  }
+  .help {
+    font-size: 11px; color: var(--muted); line-height: 1.6;
+    background: rgba(11,13,16,0.7);
+    border: 1px solid var(--border);
+    padding: 10px 12px; border-radius: 6px;
+    max-width: 320px; pointer-events: auto;
+  }
+  .help b { color: var(--text); font-weight: 600; }
+  .help kbd {
+    display: inline-block; padding: 1px 6px;
+    background: #1b2027; border: 1px solid #2a303a;
+    border-radius: 3px; font-size: 10px; color: var(--text);
+    margin: 0 1px;
+  }
+
+  /* ----- v3 solution area ----- */
+  #solution-area {
+    border-top: 1px solid var(--border);
+    padding: 14px 20px;
+    background: #0d1015;
+  }
+  #solution-area .row {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 8px;
+  }
+  #solution-area label {
+    font-size: 11px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    min-width: 110px;
+  }
+  #solution-input {
+    flex: 1;
+    background: var(--bg); color: var(--accent);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 10px 12px;
+    font-family: var(--mono); font-size: 14px;
+    letter-spacing: 1px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  #solution-input:focus { border-color: var(--accent); }
+  #solution-input:disabled { opacity: 0.5; }
+  #solution-input::placeholder { color: #3a4350; letter-spacing: 1px; }
+  #sol-count { color: var(--muted); font-size: 12px; min-width: 70px; text-align: right; }
+
+  footer {
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  }
+  button {
+    font-family: var(--mono); font-size: 13px;
+    background: var(--panel); color: var(--text);
+    border: 1px solid var(--border);
+    padding: 9px 16px; border-radius: 5px;
+    cursor: pointer; transition: all 0.15s;
+    letter-spacing: 0.5px;
+  }
+  button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  button.primary {
+    background: var(--accent); color: #0b0d10; border-color: var(--accent);
+    font-weight: 700;
+  }
+  button.primary:hover:not(:disabled) {
+    background: #8affd6; border-color: #8affd6; color: #0b0d10;
+  }
+  button.ghost { color: var(--muted); }
+  footer .spacer { flex: 1; }
+
+  #message {
+    font-size: 13px; color: var(--muted); padding: 0 4px;
+  }
+  #message.success { color: var(--accent); }
+  #message.fail { color: var(--danger); }
+
+  #modal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.82);
+    display: none; align-items: center; justify-content: center;
+    padding: 20px; z-index: 10;
+  }
+  #modal.show { display: flex; }
+  #modal .card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 26px 28px;
+    max-width: 520px; width: 100%;
+    text-align: center;
+  }
+  #modal h2 { margin: 0 0 10px; font-size: 18px; letter-spacing: 2px; text-transform: uppercase; }
+  #modal .flag {
+    font-family: var(--mono); font-size: 15px;
+    background: #0b0d10; border: 1px dashed var(--accent);
+    padding: 12px; border-radius: 5px;
+    color: var(--accent); margin: 16px 0;
+    word-break: break-all;
+  }
+  #modal .sub { color: var(--muted); font-size: 12px; margin-bottom: 18px; }
+  #modal button { margin-top: 6px; }
+
+  @media (max-width: 640px) {
+    .help { max-width: 170px; font-size: 10px; }
+    header h1 { font-size: 11px; letter-spacing: 1px; }
+    .status { font-size: 11px; gap: 10px; }
+    footer { padding: 10px; }
+    #solution-area .row { flex-wrap: wrap; }
+    #solution-area label { min-width: 0; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <header>
+    <h1>RUBIK<span>_CTF</span><span class="v">v3</span></h1>
+    <div class="status">
+      <div><span class="label">timer</span><span id="timer" class="value">--.-</span></div>
+      <div><span class="label">state</span><span id="status" class="value">init</span></div>
+    </div>
+  </header>
+
+  <div id="canvas-wrap">
+    <canvas id="c"></canvas>
+    <div class="overlay">
+      <div class="help">
+      </div>
+    </div>
+  </div>
+
+  <div id="solution-area">
+    <div class="row">
+      <label for="solution-input">Solution</label>
+      <input id="solution-input"
+             type="text"
+             autocomplete="off"
+             spellcheck="false"
+             autocapitalize="off"
+             placeholder="type keystrokes here " />
+      <div id="sol-count">0 keys</div>
+    </div>
+  </div>
+
+  <footer>
+    <button id="submit-btn" class="primary" disabled>SUBMIT</button>
+    <button id="clear-btn" class="ghost" disabled>CLEAR</button>
+    <div class="spacer"></div>
+    <div id="message">loading scramble…</div>
+  </footer>
+
+</div>
+
+<div id="modal">
+  <div class="card">
+    <h2 id="modal-title">Result</h2>
+    <div class="sub" id="modal-sub"></div>
+    <div class="flag" id="modal-flag" style="display:none"></div>
+    <button id="modal-close" class="primary">CLOSE</button>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+</script>
+<script type="module">
+import * as THREE from "three";
+
+const LETTER_TO_MOVE = {
+  q: "U",  w: "U'",
+  a: "D'", s: "D",
+  e: "L'", d: "L",
+  r: "R",  f: "R'",
+  t: "F",  g: "F'",
+  y: "B",  h: "B'",
+};
+const ALPHABET = Object.keys(LETTER_TO_MOVE);
+
+const FACE_CFG = {
+  U: { axis: "y", sign: +1, angle: -Math.PI / 2 },
+  D: { axis: "y", sign: -1, angle: +Math.PI / 2 },
+  R: { axis: "x", sign: +1, angle: -Math.PI / 2 },
+  L: { axis: "x", sign: -1, angle: +Math.PI / 2 },
+  F: { axis: "z", sign: +1, angle: -Math.PI / 2 },
+  B: { axis: "z", sign: -1, angle: +Math.PI / 2 },
+};
+
+const COLOR_BY_ID = [
+  0xffffff, 0xc41e3a, 0x009e60, 0xffd500, 0xff8c1a, 0x0046ad,
+];
+const BLACK = 0x15171b;
+
+function faceletIdx(face, ix, iy, iz) {
+  switch (face) {
+    case "U": return 0  + 3 * (iz + 1) + (ix + 1);
+    case "R": return 9  + 3 * (1 - iy) + (1 - iz);
+    case "F": return 18 + 3 * (1 - iy) + (ix + 1);
+    case "D": return 27 + 3 * (1 - iz) + (ix + 1);
+    case "L": return 36 + 3 * (1 - iy) + (iz + 1);
+    case "B": return 45 + 3 * (1 - iy) + (1 - ix);
+  }
+}
+
+
+const canvas = document.getElementById("c");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+camera.position.set(5.5, 5, 7);
+camera.lookAt(0, 0, 0);
+
+function resize() {
+  const wrap = document.getElementById("canvas-wrap");
+  const w = wrap.clientWidth, h = wrap.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener("resize", resize);
+
+const viewRoot = new THREE.Group();
+scene.add(viewRoot);
+const cubeRoot = new THREE.Group();
+viewRoot.add(cubeRoot);
+
+const CUBIE = 0.96;
+const GAP   = 1.0;
+const cubies = [];
+const allStickers = [];
+
+function buildCubie(ix, iy, iz) {
+  const cubie = new THREE.Mesh(
+    new THREE.BoxGeometry(CUBIE, CUBIE, CUBIE),
+    new THREE.MeshBasicMaterial({ color: BLACK })
+  );
+  cubie.position.set(ix * GAP, iy * GAP, iz * GAP);
+
+  const stickerSize = CUBIE * 0.88;
+  const off = CUBIE / 2 + 0.001;
+  const stickerGeom = new THREE.PlaneGeometry(stickerSize, stickerSize);
+
+  function add(face, rotX, rotY, px, py, pz) {
+    const s = new THREE.Mesh(stickerGeom, new THREE.MeshBasicMaterial({ color: BLACK }));
+    s.rotation.set(rotX, rotY, 0);
+    s.position.set(px, py, pz);
+    s.userData.faceletIdx = faceletIdx(face, ix, iy, iz);
+    cubie.add(s);
+    allStickers.push(s);
+  }
+  if (ix ===  1) add("R",  0,  Math.PI/2,  off, 0, 0);
+  if (ix === -1) add("L",  0, -Math.PI/2, -off, 0, 0);
+  if (iy ===  1) add("U", -Math.PI/2, 0, 0,  off, 0);
+  if (iy === -1) add("D",  Math.PI/2, 0, 0, -off, 0);
+  if (iz ===  1) add("F",  0, 0,          0, 0,  off);
+  if (iz === -1) add("B",  0, Math.PI,    0, 0, -off);
+
+  cubeRoot.add(cubie);
+  cubies.push(cubie);
+}
+
+for (let x = -1; x <= 1; x++)
+  for (let y = -1; y <= 1; y++)
+    for (let z = -1; z <= 1; z++)
+      buildCubie(x, y, z);
+
+viewRoot.rotation.x = -0.45;
+viewRoot.rotation.y =  0.65;
+
+function paintFromState(state) {
+  for (const s of allStickers) {
+    s.material.color.setHex(COLOR_BY_ID[state[s.userData.faceletIdx]]);
+  }
+}
+
+function faceCubies(face) {
+  const cfg = FACE_CFG[face];
+  const axis = cfg.axis, sign = cfg.sign;
+  const thresh = 0.5;
+  return cubies.filter(c => {
+    const p = c.position;
+    return (axis === "x") ? Math.sign(p.x) === sign && Math.abs(p.x) > thresh
+         : (axis === "y") ? Math.sign(p.y) === sign && Math.abs(p.y) > thresh
+         :                  Math.sign(p.z) === sign && Math.abs(p.z) > thresh;
+  });
+}
+
+function applyMoveAnimated(move, durationMs = 200) {
+  return new Promise(resolve => {
+    const face = move[0];
+    const prime = move.endsWith("'");
+    const cfg = FACE_CFG[face];
+    const finalAngle = cfg.angle * (prime ? -1 : 1);
+
+    const group = faceCubies(face);
+    const pivot = new THREE.Group();
+    cubeRoot.add(pivot);
+    for (const c of group) pivot.attach(c);
+
+    const start = performance.now();
+    function step(now) {
+      const t = Math.min(1, (now - start) / durationMs);
+      const e = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
+      pivot.rotation[cfg.axis] = finalAngle * e;
+      if (t < 1) requestAnimationFrame(step);
+      else {
+        pivot.updateMatrixWorld(true);
+        for (const c of [...group]) {
+          cubeRoot.attach(c);
+          c.position.x = Math.round(c.position.x);
+          c.position.y = Math.round(c.position.y);
+          c.position.z = Math.round(c.position.z);
+        }
+        cubeRoot.remove(pivot);
+        resolve();
+      }
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+function tick() { renderer.render(scene, camera); requestAnimationFrame(tick); }
+resize(); tick();
+
+
+const viewTarget = { x: viewRoot.rotation.x, y: viewRoot.rotation.y };
+function animateView() {
+  viewRoot.rotation.x += (viewTarget.x - viewRoot.rotation.x) * 0.15;
+  viewRoot.rotation.y += (viewTarget.y - viewRoot.rotation.y) * 0.15;
+  requestAnimationFrame(animateView);
+}
+animateView();
+
+let dragging = false, lastX = 0, lastY = 0;
+canvas.addEventListener("pointerdown", e => {
+  dragging = true; lastX = e.clientX; lastY = e.clientY;
+  canvas.setPointerCapture(e.pointerId);
+});
+canvas.addEventListener("pointermove", e => {
+  if (!dragging) return;
+  const dx = e.clientX - lastX, dy = e.clientY - lastY;
+  lastX = e.clientX; lastY = e.clientY;
+  viewTarget.y += dx * 0.01;
+  viewTarget.x += dy * 0.01;
+  viewTarget.x = Math.max(-1.3, Math.min(1.3, viewTarget.x));
+  viewRoot.rotation.y = viewTarget.y;
+  viewRoot.rotation.x = viewTarget.x;
+});
+canvas.addEventListener("pointerup",     () => { dragging = false; });
+canvas.addEventListener("pointercancel", () => { dragging = false; });
+
+let sessionId   = null;
+let submitToken = null;
+let timerSec    = 10;
+let startedAt   = null;
+let submitted   = false;
+let playing     = false;
+
+const $ = id => document.getElementById(id);
+const input = $("solution-input");
+
+function setMessage(msg, cls = "") {
+  const el = $("message");
+  el.textContent = msg;
+  el.className = cls;
+}
+
+function sanitize(raw) {
+  return raw.toLowerCase().split("").filter(ch => LETTER_TO_MOVE[ch]).join("");
+}
+
+function updateFromInput() {
+  const raw = input.value;
+  const clean = sanitize(raw);
+  if (clean !== raw) {
+    input.value = clean;
+  }
+  $("sol-count").textContent = `${clean.length} ${clean.length === 1 ? "key" : "keys"}`;
+  const locked = submitted || playing;
+  $("submit-btn").disabled = locked || clean.length === 0;
+  $("clear-btn").disabled  = locked || clean.length === 0;
+}
+
+input.addEventListener("input", updateFromInput);
+
+function tickTimer() {
+  if (startedAt === null || submitted) return;
+  const left = Math.max(0, timerSec - (Date.now() - startedAt) / 1000);
+  const el = $("timer");
+  el.textContent = left.toFixed(1) + "s";
+  el.classList.toggle("warn", left <= 5 && left > 2);
+  el.classList.toggle("crit", left <= 2);
+  if (left <= 0 && !submitted) { timerExpired(); return; }
+  requestAnimationFrame(tickTimer);
+}
+
+async function fetchScramble() {
+  setMessage("requesting scrambled state…");
+  const r = await fetch("/api/scramble", { method: "POST" });
+  if (!r.ok) { setMessage("scramble request failed", "fail"); return; }
+  const data = await r.json();
+  sessionId   = data.session_id;
+  submitToken = data.submit_token;
+  timerSec    = data.timer_seconds;
+
+  paintFromState(data.state);
+  $("status").textContent = "ready";
+  setMessage("type or paste your keystroke solution, then SUBMIT");
+  input.disabled = false;
+  input.focus();
+
+  startedAt = Date.now();
+  requestAnimationFrame(tickTimer);
+}
+
+async function submitSolution() {
+  const solution = sanitize(input.value);
+  if (submitted || playing || solution.length === 0) return;
+  submitted = true;
+  input.disabled = true;
+  updateFromInput();
+
+  setMessage("submitting…");
+  const r = await fetch("/api/submit", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      session_id: sessionId,
+      submit_token: submitToken,
+      solution,            
+    })
+  });
+  const data = await r.json();
+
+  playing = true;
+  setMessage("playing back your moves…");
+  $("status").textContent = "playing";
+  for (const ch of solution) {
+    const mv = LETTER_TO_MOVE[ch];
+    if (mv) await applyMoveAnimated(mv, 180);
+  }
+  playing = false;
+  $("status").textContent = data.success ? "solved" : "failed";
+
+  if (data.success) {
+    setMessage(`solved in ${data.elapsed}s — flag captured`, "success");
+    showModal("SOLVED", `you solved the cube in ${data.elapsed}s (${data.moves_used} quarter-turns)`, data.flag);
+  } else {
+    setMessage(`failed: ${data.error}`, "fail");
+    showModal("FAILED", data.error + (data.elapsed !== undefined ? ` (${data.elapsed}s elapsed)` : ""));
+  }
+}
+
+function timerExpired() {
+  if (submitted) return;
+  submitted = true;
+  input.disabled = true;
+  setMessage("time expired — submission locked", "fail");
+  $("status").textContent = "expired";
+  $("timer").textContent = "0.0s";
+  $("timer").classList.add("crit");
+  updateFromInput();
+  fetch("/api/submit", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      session_id: sessionId,
+      submit_token: submitToken,
+      solution: sanitize(input.value),
+    })
+  }).catch(() => {});
+  showModal("TIME EXPIRED", "the 10-second window closed before you submitted.");
+}
+
+function showModal(title, sub, flag) {
+  $("modal-title").textContent = title;
+  $("modal-sub").textContent = sub;
+  const fe = $("modal-flag");
+  if (flag) { fe.style.display = "block"; fe.textContent = flag; }
+  else      { fe.style.display = "none"; }
+  $("modal").classList.add("show");
+}
+$("modal-close").addEventListener("click", () => $("modal").classList.remove("show"));
+
+$("submit-btn").addEventListener("click", submitSolution);
+$("clear-btn").addEventListener("click", () => {
+  if (submitted || playing) return;
+  input.value = "";
+  updateFromInput();
+  input.focus();
+});
+
+
+window.addEventListener("keydown", (e) => {
+  if (submitted || playing) return;
+
+  const STEP = 0.26;
+  if (e.key === "ArrowLeft")  { viewTarget.y -= STEP; e.preventDefault(); return; }
+  if (e.key === "ArrowRight") { viewTarget.y += STEP; e.preventDefault(); return; }
+  if (e.key === "ArrowUp")    { viewTarget.x = Math.max(-1.3, viewTarget.x - STEP); e.preventDefault(); return; }
+  if (e.key === "ArrowDown")  { viewTarget.x = Math.min( 1.3, viewTarget.x + STEP); e.preventDefault(); return; }
+
+  if (document.activeElement === input) {
+    if (e.key === "Enter") { submitSolution(); return; }
+    return;
+  }
+
+  if (e.key === "Enter") { submitSolution(); return; }
+
+  const k = e.key.toLowerCase();
+  if (k.length === 1 && LETTER_TO_MOVE[k]) {
+    e.preventDefault();
+    input.value += k;
+    updateFromInput();
+  }
+}, { passive: false });
+
+fetchScramble().catch(err => {
+  console.error(err);
+  setMessage("could not reach server — is it running?", "fail");
+});
+</script>
+</body>
+</html>

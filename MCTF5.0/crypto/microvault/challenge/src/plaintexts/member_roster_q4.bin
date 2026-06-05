@@ -1,0 +1,31 @@
+# Microclub Member Roster — 2026 Q4
+# DO NOT REDISTRIBUTE
+# Format: id,handle,role,join_date
+
+001,zeref,department-lead,2024-09-01
+002,seraph,devops-lead,2024-10-12
+003,acedia,crypto-lead,2025-01-04
+004,vesper,reviewer,2025-02-19
+005,ember,reviewer,2025-03-22
+006,monax,security,2025-04-08
+007,helia,frontend,2025-05-30
+008,brick,backend,2025-06-14
+009,quill,docs,2025-07-21
+010,silt,intern,2025-08-09
+011,cinder,intern,2025-08-09
+012,fennec,events,2025-09-13
+013,osprey,events,2025-09-13
+014,marble,outreach,2025-10-04
+015,orchid,outreach,2025-10-04
+016,nyx,security,2025-11-18
+017,cael,frontend,2025-12-02
+018,rune,backend,2026-01-15
+019,thal,docs,2026-02-07
+020,sunder,reviewer,2026-03-11
+021,wisp,reviewer,2026-03-11
+022,mire,intern,2026-04-22
+023,quartz,intern,2026-04-22
+024,gale,events,2026-05-13
+025,linden,outreach,2026-06-01
+
+-- end of roster --

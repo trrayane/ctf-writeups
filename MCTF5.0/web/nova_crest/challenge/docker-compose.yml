@@ -1,0 +1,50 @@
+name: nova-crest
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    networks:
+      - challenge_network
+    volumes:
+      - mongo_data:/data/db
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile # Use the Dockerfile in the current directory
+
+    environment:
+      - NODE_ENV=production
+      - PORT=8000
+      - MONGO_URI=mongodb://mongo:27017/nova_crest
+      - APP_URL=https://biohazard.mctf.microclub.info
+      - FRONTEND_URL=https://biohazard.mctf.microclub.info
+      - JWT_ACCESS_SECRET=88842f33046d03f81299afb1bed278b7851855181ae2422734f21e72b7728169
+      - JWT_REFRESH_SECRET=8ce121225399d0538a2018c2bf908724a887756a51b31af11e4fb2910da72408
+      - JWT_ACCESS_TTL=15m
+      - JWT_REFRESH_TTL=7d
+      - SEED_ADMIN_EMAIL=admin@novacrest-bio.com
+      - SEED_ADMIN_PASSWORD=968c2895326a63e93a7be4765b3e8e14
+      - SEED_ADMIN_LOGS_PASSWORD=f7ec7e50bd3857abefb80d574d816c27
+      - SEED_ADMIN_LOGS_ENABLED=true
+      - SEED_ADMIN_NAME=NovaCrest Administrator
+      - SEED_FAKER_SEED=1337
+
+    ports: # Map port 8000 of the container to port 8000 on the host
+      - "10070:8000"
+    depends_on:
+      - mongo
+    networks:
+      - challenge_network
+    restart: unless-stopped # Restart policy for the container
+    mem_limit: 1g # Limit memory usage to 1 GB (modify if the app requires more)
+    cpus: 1 # Limit CPU usage
+
+volumes:
+  mongo_data:
+
+
+networks:
+  challenge_network:
+    driver: bridge

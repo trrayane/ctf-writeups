@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Admit — MCTF admissions</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<!-- Admit v1.0.0 — built by z. for MCTF ops. -->
+<div id="login-view" class="login">
+  <div class="card">
+    <div class="brand">
+      <img src="/mctf-logo.svg" alt="MCTF">
+      <div>
+        <div class="name">Admit</div>
+        <div class="sub">MicroClub · MCTF admissions</div>
+      </div>
+    </div>
+    <div class="tab-row">
+      <div class="tab active" data-tab="login">Sign in</div>
+      <div class="tab" data-tab="signup">Create account</div>
+    </div>
+    <div class="msg" id="login-msg"></div>
+    <div class="row">
+      <label>Email</label>
+      <input id="login-email" type="email" autocomplete="email" required>
+    </div>
+    <div class="row">
+      <label>Password</label>
+      <input id="login-pass" type="password" autocomplete="current-password" required>
+    </div>
+    <button class="primary" id="login-submit">Sign in</button>
+  </div>
+</div>
+
+<div id="app-view" class="shell" style="display:none">
+  <header class="topbar">
+    <div class="brand">
+      <img src="/mctf-logo.svg" alt="MCTF">
+      <span>Admit</span>
+      <span class="mctf">MCTF · MicroClub</span>
+    </div>
+    <div class="spacer"></div>
+    <span class="chip" id="user-chip">…</span>
+    <button id="btn-logout">Sign out</button>
+  </header>
+
+  <main class="main">
+    <div class="grid-2">
+      <div>
+        <section class="card section" id="applications">
+          <h2>Pending applications</h2>
+          <div id="app-list"><span class="muted small">loading…</span></div>
+        </section>
+
+        <section class="card section" id="verdicts-section">
+          <h2>Sealed verdicts <span class="muted small">(admin only)</span></h2>
+          <div id="verdicts-view" class="muted small">You don't have access to this section.</div>
+          <button id="btn-read-verdicts" style="margin-top:10px">Try reading sealed_verdicts/secret</button>
+        </section>
+      </div>
+
+      <div>
+        <section class="card section">
+          <h2>My profile</h2>
+          <div id="profile-view" class="dump">–</div>
+          <div class="row-gap" style="margin-top:10px">
+            <button id="btn-refresh-token">Refresh ID token</button>
+            <button id="btn-request-promotion">Request promotion</button>
+          </div>
+        </section>
+
+        <section class="card section">
+          <h2>Promotion eligibility</h2>
+          <div id="elig-view" class="dump">–</div>
+          <div class="row-gap" style="margin-top:10px">
+            <button id="btn-check-elig">Refresh</button>
+            <button id="btn-create-elig" class="small">Create request</button>
+          </div>
+          <div class="small muted" style="margin-top:6px">
+            Reviewers may request promotion via <code>promotion_eligibility/&lt;uid&gt;</code>. A
+            senior admin then flips <code>approved</code> to true.
+          </div>
+        </section>
+
+        <section class="card section">
+          <h2>Account</h2>
+          <div class="row-gap">
+            <input id="new-email" placeholder="new email" style="max-width:260px">
+            <button id="btn-change-email">Change email…</button>
+          </div>
+          <div class="small muted" style="margin-top:6px">
+            Legitimate flow: send an out-of-band verification code to the new
+            address and apply it when the link is clicked.
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="statusbar">
+    <span>Admit v1.0.0</span>
+    <span class="spacer"></span>
+    <span>role: <span id="role-flag">member</span></span>
+    <span>email-verified: <span id="verified-flag">–</span></span>
+  </footer>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script type="module" src="/app.js"></script>
+</body>
+</html>

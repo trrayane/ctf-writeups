@@ -1,0 +1,58 @@
+# Microvault — Terms of Service (Internal)
+# Effective: 2026-Q4
+
+These terms govern use of Microvault by Microclub staff. Use of the
+service implies acceptance.
+
+## 1. Permitted use
+
+Microvault may be used to store internal-only material that is not
+classified above "Internal Only". It may NOT be used to store:
+
+  - Personally-identifying information beyond Microclub member rosters.
+  - Customer or sponsor data.
+  - Material under embargo or NDA.
+  - Material classified "Confidential" or above.
+  - Cryptographic key material.
+
+If you are uncertain whether a document may be stored, ask the
+DevOps team before uploading.
+
+## 2. Encryption disclaimer
+
+Microvault encrypts files at rest using an in-house primitive
+maintained by the cryptography team. The primitive is NOT a vetted
+cryptographic construction and NOT cleared for material above
+"Internal Only". The encryption is provided as a defence in depth
+against casual disk-level access, not as a strong confidentiality
+guarantee.
+
+## 3. Access
+
+Access to Microvault is controlled at the network layer. Production
+deployments are intended to be reachable only from the Microclub
+internal network. The MCP debug interface is intended for engineering
+diagnostics only.
+
+If you can read this document, you have already authenticated to the
+internal network. Do not redistribute the access URL.
+
+## 4. Audit
+
+All read operations against the MCP interface are logged. Logs are
+retained for 90 days and reviewed weekly by the audit team. Anomalous
+access patterns may result in revocation of access.
+
+## 5. Liability
+
+Microvault is provided AS-IS for internal use. The Microclub DevOps
+team makes no warranty of fitness for any particular purpose. In
+particular, do not rely on Microvault availability for anything
+operationally critical.
+
+## 6. Changes to these terms
+
+These terms may be amended at any time without notice. The current
+version is canonical.
+
+-- end of terms --

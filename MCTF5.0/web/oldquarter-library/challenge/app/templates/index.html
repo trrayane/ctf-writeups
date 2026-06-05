@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+    <div class="hero-text">
+        <h1>Borrow. Browse. Belong.</h1>
+        <p class="lead">
+            Two hundred thousand volumes, a reading room that smells of varnish and rain, and
+            a card catalogue that has been digitised twice and still feels analogue.
+        </p>
+        <form action="/search" method="get" class="hero-search" role="search">
+            <input type="search" name="q" placeholder="Search title, author, ISBN&hellip;" autocomplete="off">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    <aside class="hero-card">
+        <h3>This week</h3>
+        <ul class="event-list">
+            <li><strong>Tue 18:30</strong> &mdash; Russian-language reading group (Hall B)</li>
+            <li><strong>Thu 17:00</strong> &mdash; Children's hour with Mme. Robert</li>
+            <li><strong>Sat 11:00</strong> &mdash; Bookbinding workshop (sign-up required)</li>
+        </ul>
+    </aside>
+</section>
+
+<section class="row">
+    <header class="row-header">
+        <h2>Recently added</h2>
+        <a href="/catalog" class="row-more">Browse all &rarr;</a>
+    </header>
+    <div class="grid">
+        {% for b in featured %}
+        <a class="book-card" href="/book/{{ b.id }}">
+            <div class="cover" data-genre="{{ b.genre }}">
+                <span class="cover-title">{{ b.title }}</span>
+                <span class="cover-author">{{ b.author }}</span>
+            </div>
+            <div class="book-meta">
+                <strong>{{ b.title }}</strong>
+                <em>{{ b.author }} &middot; {{ b.year }}</em>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="row">
+    <header class="row-header"><h2>Most borrowed this season</h2></header>
+    <div class="grid grid-4">
+        {% for b in popular %}
+        <a class="book-card" href="/book/{{ b.id }}">
+            <div class="cover" data-genre="{{ b.genre }}">
+                <span class="cover-title">{{ b.title }}</span>
+                <span class="cover-author">{{ b.author }}</span>
+            </div>
+            <div class="book-meta">
+                <strong>{{ b.title }}</strong>
+                <em>{{ b.author }}</em>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

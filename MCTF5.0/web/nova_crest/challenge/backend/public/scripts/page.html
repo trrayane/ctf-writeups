@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QMongo Forum</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f2efe8;
+        --panel: rgba(255, 252, 245, 0.96);
+        --panel-strong: #fff9ef;
+        --ink: #1f1a16;
+        --muted: #6f655c;
+        --line: rgba(54, 39, 25, 0.16);
+        --accent: #b54827;
+        --accent-dark: #7d2f18;
+        --accent-soft: rgba(181, 72, 39, 0.12);
+        --shadow: 0 18px 48px rgba(43, 27, 18, 0.14);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(181, 72, 39, 0.22), transparent 30%),
+          linear-gradient(180deg, #efe6d5, var(--bg));
+      }
+
+      .shell {
+        width: min(1100px, calc(100% - 32px));
+        margin: 32px auto;
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 20px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .masthead {
+        padding: 28px;
+        background:
+          linear-gradient(135deg, rgba(181, 72, 39, 0.16), transparent),
+          var(--panel-strong);
+        border-bottom: 1px solid var(--line);
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(2rem, 5vw, 3.6rem);
+        line-height: 0.95;
+        margin-bottom: 12px;
+      }
+
+      .subtitle {
+        max-width: 52ch;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .body {
+        padding: 24px;
+      }
+
+      .post-list {
+        display: grid;
+        gap: 14px;
+      }
+
+      .post {
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: white;
+      }
+
+      .post-meta,
+      .hint,
+      label {
+        color: var(--muted);
+      }
+
+      .post-meta {
+        margin-top: 10px;
+        font-size: 0.95rem;
+      }
+
+      .sidebar {
+        display: grid;
+        gap: 20px;
+      }
+
+      form {
+        display: grid;
+        gap: 12px;
+      }
+
+      textarea,
+      input,
+      select,
+      button {
+        font: inherit;
+      }
+
+      textarea,
+      input,
+      select {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px 14px;
+        background: white;
+        color: var(--ink);
+      }
+
+      textarea {
+        min-height: 160px;
+        resize: vertical;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 12px 18px;
+        background: var(--accent);
+        color: white;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: var(--accent-dark);
+      }
+
+      .ghost {
+        background: var(--accent-soft);
+        color: var(--accent-dark);
+      }
+
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      pre {
+        margin: 0;
+        padding: 16px;
+        border-radius: 16px;
+        background: #1d1b19;
+        color: #f8f3ea;
+        overflow: auto;
+        font-size: 0.9rem;
+      }
+
+      .examples {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 14px 0;
+      }
+
+      .example {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        border: 1px solid rgba(181, 72, 39, 0.2);
+        cursor: pointer;
+      }
+
+      @media (max-width: 900px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="panel">
+        <header class="masthead">
+          <h1>QMongo Forum</h1>
+          <p class="subtitle">
+            A small message board backed by the default <strong>User</strong> and
+            <strong>Post</strong> models. Browse the seeded content, add a post, and
+            run raw QMongo against the backend.
+          </p>
+        </header>
+        <div class="body">
+          <h2>Forum Posts</h2>
+          <p class="hint">Posts are loaded from MongoDB with populated authors.</p>
+          <div id="posts" class="post-list"></div>
+        </div>
+      </section>
+
+      <aside class="sidebar">
+        <section class="panel">
+          <div class="body">
+            <h2>Run QMongo</h2>
+            <p class="hint">Submit a query to <code>POST /api/query</code>.</p>
+            <div class="examples">
+              <button class="example" type="button" data-query='from User'>List users</button>
+              <button class="example" type="button" data-query='from Post include author'>Populate posts</button>
+              <button class="example" type="button" data-query='from Post where title contains "Welcome"'>Filter posts</button>
+            </div>
+            <form id="query-form">
+              <label for="query">QMongo Query</label>
+              <textarea id="query" name="query">from Post include author</textarea>
+              <div class="button-row">
+                <button type="submit">Execute Query</button>
+                <button class="ghost" type="button" id="refresh-button">Refresh Forum</button>
+              </div>
+            </form>
+            <pre id="query-output">Waiting for query...</pre>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="body">
+            <h2>Create Post</h2>
+            <p class="hint">Submit a standard form POST to add forum content.</p>
+            <form id="post-form">
+              <label for="title">Title</label>
+              <input id="title" name="title" required />
+              <label for="description">Description</label>
+              <textarea id="description" name="description" required></textarea>
+              <label for="author">Author</label>
+              <select id="author" name="author" required></select>
+              <button type="submit">Publish Post</button>
+            </form>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <script>
+      const postsEl = document.getElementById("posts");
+      const queryOutputEl = document.getElementById("query-output");
+      const authorEl = document.getElementById("author");
+      const queryEl = document.getElementById("query");
+
+      function pretty(value) {
+        return JSON.stringify(value, null, 2);
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, (char) => {
+          const chars = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+          };
+          return chars[char] || char;
+        });
+      }
+
+      function renderPosts(posts) {
+        if (!posts.length) {
+          postsEl.innerHTML = "<p>No posts found.</p>";
+          return;
+        }
+
+        postsEl.innerHTML = posts
+          .map((post) => {
+            const author = post.author && post.author.name ? post.author.name : "Unknown";
+            return `
+              <article class="post">
+                <h3>${escapeHtml(post.title)}</h3>
+                <p>${escapeHtml(post.description)}</p>
+                <p class="post-meta">Author: ${escapeHtml(author)}</p>
+              </article>
+            `;
+          })
+          .join("");
+      }
+
+      async function loadForum() {
+        const response = await fetch("/api/forum");
+        const data = await response.json();
+        renderPosts(data.posts);
+        authorEl.innerHTML = data.users
+          .map((user) => `<option value="${user._id}">${escapeHtml(user.name)} (${user.age})</option>`)
+          .join("");
+      }
+
+      document.getElementById("query-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        queryOutputEl.textContent = "Running query...";
+
+        const response = await fetch("/api/query", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: queryEl.value }),
+        });
+
+        const payload = await response.json();
+        queryOutputEl.textContent = pretty(payload);
+      });
+
+      document.getElementById("post-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const form = new FormData(event.currentTarget);
+
+        const response = await fetch("/api/posts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: form.get("title"),
+            description: form.get("description"),
+            author: form.get("author"),
+          }),
+        });
+
+        const payload = await response.json();
+        queryOutputEl.textContent = pretty(payload);
+
+        if (response.ok) {
+          event.currentTarget.reset();
+          await loadForum();
+        }
+      });
+
+      document.getElementById("refresh-button").addEventListener("click", loadForum);
+
+      document.querySelectorAll(".example").forEach((button) => {
+        button.addEventListener("click", () => {
+          queryEl.value = button.dataset.query;
+        });
+      });
+
+      loadForum().catch((error) => {
+        queryOutputEl.textContent = error.message;
+      });
+    </script>
+    
+  <script src="scripts/qmongo.obfuscated.js"> 
+  </script>
+
+  <script>
+    const result=QMongo.parse(`
+      fro Post include author
+    `)
+    console.log(result);
+  </script>
+
+  </body>
+</html>

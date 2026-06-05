@@ -1,0 +1,12 @@
+services:
+  app:
+    build:
+      network: host
+      context: .
+      dockerfile: Dockerfile
+    container_name: draganeel
+    ports:
+      - "10020:8080"
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.5

@@ -1,0 +1,30 @@
+challenge:
+  name: "Mark Me Down" # Challenge name
+
+  author: "COn4n" # Author of the challenge
+
+  category: web # Category of the challenge, can be one of: web, pwn, crypto, reverse, misc, forensics, osint
+
+  difficulty: medium # Difficulty of the challenge, can be one of: easy, medium, hard, extreme
+
+  description: Convert Markdown to PDF, for free? # Description of the challenge
+
+  wave: 2 # Deployment wave number
+
+  flags: # Flags for the challenge
+    - { flag: "mctf{1_WonT_U$e_1@73X_nEVEr_3VEr_4g@iN}", case_sensitive: true } # Example flag, case_sensitive indicates if the flag is case sensitive
+
+  need_deploy: true # Whether the challenge needs to be deployed or not
+
+  links: [] # Link to the challenge , external assets...
+
+# This Part does not concern challenges authors, it is for infrastructure team to deploy the challenge, it can be left empty for challenges that do not need deployment
+
+deploy:
+  subdomain: "mark-me-down" # Subdomain for the challenge, used for deployment
+  port: 10050 # Port for the challenge, used for deployment
+  #internal_port: 80 # Internal port for the challenge, used for deployment
+  dynamic_instances: false # Whether this challenge uses dynamic instances
+  tcp: false # Whether the challenge uses TCP or HTTP, true for TCP, false for HTTP
+  noSsl: false # Indicates that this challenge must not use SSL
+

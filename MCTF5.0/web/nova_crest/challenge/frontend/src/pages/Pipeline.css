@@ -1,0 +1,110 @@
+.pipeline-table {
+  overflow-x: auto;
+}
+
+.pipeline-table__inner {
+  display: grid;
+  gap: 24px;
+  min-width: 960px;
+}
+
+.pipeline-table__header,
+.pipeline-row {
+  display: grid;
+  grid-template-columns: 1.1fr 1.4fr 1.2fr repeat(5, minmax(96px, 1fr));
+  gap: 16px;
+  align-items: center;
+}
+
+.pipeline-table__header {
+  padding: 0 32px;
+  color: var(--text-dim);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pipeline-row--highlight {
+  border-color: rgba(0, 230, 118, 0.4);
+  background:
+    radial-gradient(circle at top right, rgba(0, 230, 118, 0.16), transparent 36%),
+    var(--surface);
+}
+
+.pipeline-row__compound-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.pipeline-row__compound h2 {
+  font-size: 24px;
+  letter-spacing: -0.03em;
+}
+
+.pipeline-row__compound p,
+.pipeline-row__condition,
+.pipeline-row__modality {
+  margin-top: 8px;
+  color: var(--text-secondary);
+}
+
+.pipeline-row__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0, 230, 118, 0.14);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pipeline-stage {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.pipeline-stage::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+}
+
+.pipeline-stage span {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.pipeline-stage--complete::before {
+  border-color: rgba(0, 230, 118, 0.4);
+  background: rgba(0, 230, 118, 0.24);
+}
+
+.pipeline-stage--current::before {
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: 0 0 0 8px rgba(0, 230, 118, 0.12);
+}
+
+.pipeline-stage--pending::before {
+  border-color: var(--accent);
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 230, 118, 0.12),
+      rgba(0, 230, 118, 0.12) 4px,
+      transparent 4px,
+      transparent 8px
+    );
+}

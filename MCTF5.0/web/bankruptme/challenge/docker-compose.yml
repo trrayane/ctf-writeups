@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "10010:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: bankruptme
+      DB_USER: bankruptme
+      DB_PASS: bankruptme_secret
+      FLAG: "mctf{r4c3_c0nd1t10n_und3rfl0w_juggl1ng_ch41n}"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secret
+      MYSQL_DATABASE:      bankruptme
+      MYSQL_USER:          bankruptme
+      MYSQL_PASSWORD:      bankruptme_secret
+    volumes:
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
+volumes:
+  db_data:

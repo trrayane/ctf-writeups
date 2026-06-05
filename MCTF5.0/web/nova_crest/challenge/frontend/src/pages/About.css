@@ -1,0 +1,44 @@
+.about-story {
+  background:
+    linear-gradient(135deg, rgba(0, 230, 118, 0.12), transparent 48%),
+    var(--surface);
+}
+
+.about-story p {
+  max-width: 880px;
+  color: var(--text-secondary);
+  font-size: 20px;
+}
+
+.about-offices,
+.about-values {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.about-office h3,
+.about-value h3 {
+  font-size: 24px;
+  letter-spacing: -0.03em;
+}
+
+.about-office__address,
+.about-value p {
+  margin-top: 16px;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 959px) {
+  .about-offices,
+  .about-values {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .about-story p {
+    font-size: 18px;
+  }
+}

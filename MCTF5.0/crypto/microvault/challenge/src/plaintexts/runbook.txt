@@ -1,0 +1,69 @@
+# Microvault Operations Runbook
+# Microclub DevOps — internal use only
+# Last revised: 2026-Q4
+
+## 0. Glossary
+
+  Microvault     The internal document storage service.
+  MCP            Model Context Protocol; the administrative interface
+                 exposed at /mcp on the service port.
+  Asset          A named blob stored in the vault.
+
+## 1. Daily checks
+
+  1. Verify the service is reachable on the configured port.
+  2. Confirm the MCP tools list_assets and read_asset respond.
+  3. Inspect /var/log/microvault/access.log for unexpected client IPs.
+  4. Confirm asset count matches the manifest (currently six files).
+
+## 2. Rebuilding the vault
+
+  Vault rebuilds are performed at image build time. The build pipeline
+  reads each plaintext from src/plaintexts/, encrypts it under the
+  in-house primitive maintained by the cryptography team, and writes
+  ciphertext to /app/out/.
+
+  To trigger a rebuild:
+
+    cd microvault/challenge
+    docker compose build --no-cache
+    docker compose up -d
+
+  Verify by calling list_assets via the MCP interface and confirming
+  six entries are present.
+
+## 3. Master keying
+
+  The master keying material is currently derived from a fixed build-time
+  constant. Rotation is NOT yet implemented. See the Q4 2026 audit
+  report for the standing recommendation.
+
+  Until rotation is implemented, do not rely on Microvault to protect
+  any material classified above "Internal Only."
+
+## 4. Incident response
+
+  In the event of suspected compromise:
+
+  1. Bind the MCP interface to 127.0.0.1 (edit docker-compose.yml,
+     remove the public port mapping). Restart the container.
+  2. Rotate the master keying material (currently requires a manual
+     code edit — contact the cryptography team).
+  3. Re-encrypt all assets (full rebuild).
+  4. Notify the audit team.
+
+## 5. Known issues
+
+  - The MCP interface binds to 0.0.0.0 by default. This is the
+    open finding from the 2026 Q4 audit.
+  - There is no integrity tag on ciphertexts.
+  - The master keying material does not rotate.
+
+## 6. Contacts
+
+  DevOps          devops@microclub.info
+  Crypto Team     crypto@microclub.info
+  Audit           audit@microclub.info
+  On-call         oncall@microclub.info  (rotate; see PagerDuty)
+
+-- end of runbook --

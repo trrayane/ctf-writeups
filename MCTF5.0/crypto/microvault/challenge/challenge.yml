@@ -1,0 +1,31 @@
+challenge:
+  name: "Microvault"
+
+  author: "Zeref"
+
+  category: crypto
+
+  difficulty: extreme
+
+  description: "Microvault internal. Encrypted at rest. Don't share the URL."
+
+  wave: 3
+
+  flags:
+    - { flag: "mctf{n0_specs_n0_h1nts_just_pure_4lg3br4_4nd_h45h_ch41ns}", case_sensitive: true }
+
+  need_deploy: true
+
+  tags:
+    - crypto
+    - mcp
+    - prng
+
+  links: []
+
+deploy:
+  subdomain: "microvault"
+  port: 12902
+  dynamic_instances: false # Whether this challenge uses dynamic instances
+  tcp: false
+  noSsl: false

@@ -1,0 +1,9 @@
+services:
+  microvault:
+    build: .
+    container_name: microvault
+    restart: unless-stopped
+    ports:
+      - "12902:8080"
+    environment:
+      - PORT=8080

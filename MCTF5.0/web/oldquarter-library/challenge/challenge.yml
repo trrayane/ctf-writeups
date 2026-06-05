@@ -1,0 +1,31 @@
+challenge:
+  name: "Oldquarter Library" # Challenge name
+
+  author: "$h3rL0ck" # Author of the challenge
+
+  category: web # Category of the challenge, can be one of: web, pwn, crypto, reverse, misc, forensics, osint
+
+  difficulty: medium # Difficulty of the challenge, can be one of: easy, medium, hard, extreme
+
+  description: This is just a test challenge. # Description of the challenge
+
+  wave: 2 # Deployment wave number
+
+  # force_hidden: false # Optional: force-hide this challenge in CTFd
+
+  flags: # Flags for the challenge
+    - { flag: "mctf{nginx_off_by_slash_then_python_import_hijack_OQa72gy0rjfr}", case_sensitive: true } # Example flag, case_sensitive indicates if the flag is case sensitive
+
+  need_deploy: true # Whether the challenge needs to be deployed or not
+
+  links: []
+
+# This Part does not concern challenges authors, it is for infrastructure team to deploy the challenge, it can be left empty for challenges that do not need deployment
+
+deploy:
+  subdomain: "oldquarter-library" # Subdomain for the challenge, used for deployment
+  port: 10060 # External port for static challenges (use null for dynamic instances)
+  dynamic_instances: false # Whether this challenge uses dynamic instances
+  tcp: false # Whether the challenge uses TCP or HTTP, true for TCP, false for HTTP
+  noSsl: false # Indicates that this challenge must not use SSL
+

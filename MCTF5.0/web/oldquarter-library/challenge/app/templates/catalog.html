@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Catalogue &middot; {{ site_name }}{% endblock %}
+{% block content %}
+<header class="page-head">
+    <h1>Catalogue</h1>
+    <p class="muted">{{ total }} volume{{ '' if total == 1 else 's' }} on the shelves.</p>
+</header>
+
+<aside class="filters">
+    <span class="filter-label">Genre:</span>
+    <a class="chip {% if not genre %}chip-active{% endif %}" href="/catalog">All</a>
+    {% for g in genres %}
+        <a class="chip {% if genre == g %}chip-active{% endif %}" href="/catalog?genre={{ g }}">{{ g }}</a>
+    {% endfor %}
+</aside>
+
+<div class="grid grid-3">
+    {% for b in books %}
+    <a class="book-card" href="/book/{{ b.id }}">
+        <div class="cover" data-genre="{{ b.genre }}">
+            <span class="cover-title">{{ b.title }}</span>
+            <span class="cover-author">{{ b.author }}</span>
+        </div>
+        <div class="book-meta">
+            <strong>{{ b.title }}</strong>
+            <em>{{ b.author }} &middot; {{ b.year }}</em>
+            <span class="badge">{{ b.genre }}</span>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+{% if pages > 1 %}
+<nav class="pager">
+    {% if page > 1 %}
+        <a href="?page={{ page - 1 }}{% if genre %}&amp;genre={{ genre }}{% endif %}">&larr; Previous</a>
+    {% else %}
+        <span class="disabled">&larr; Previous</span>
+    {% endif %}
+    <span class="pager-meta">Page {{ page }} of {{ pages }}</span>
+    {% if page < pages %}
+        <a href="?page={{ page + 1 }}{% if genre %}&amp;genre={{ genre }}{% endif %}">Next &rarr;</a>
+    {% else %}
+        <span class="disabled">Next &rarr;</span>
+    {% endif %}
+</nav>
+{% endif %}
+{% endblock %}

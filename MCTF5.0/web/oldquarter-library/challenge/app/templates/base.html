@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ site_name }}{% endblock %}</title>
+    <meta name="description" content="A neighbourhood library: borrow, browse, belong.">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="/static/img/logo.svg">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="brand" href="/">
+                <img src="/static/img/logo.svg" alt="" width="36" height="36">
+                <span>
+                    <strong>The Old Quarter</strong>
+                    <em>Public Library &middot; est. 1897</em>
+                </span>
+            </a>
+            <nav class="primary-nav">
+                <a href="/">Home</a>
+                <a href="/catalog">Catalogue</a>
+                <a href="/search">Search</a>
+                <a href="/hours">Hours</a>
+                <a href="/about">About</a>
+            </nav>
+            <div class="header-meta">
+                {% if current_user %}
+                    <span class="user">{{ current_user }}</span>
+                    <a class="btn-link" href="/logout">Sign out</a>
+                {% else %}
+                    <a class="btn-link" href="/login">Patron sign in</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="container content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div>
+                <strong>The Old Quarter Public Library</strong><br>
+                14 Rue des Archives &middot; Old Quarter<br>
+                +33 (0)1 42 00 00 00
+            </div>
+            <div>
+                <strong>Opening hours</strong><br>
+                Tue&ndash;Fri 09:00&ndash;19:00<br>
+                Sat 10:00&ndash;17:00 &middot; Sun &amp; Mon closed
+            </div>
+            <div>
+                <strong>Contact</strong><br>
+                <a href="mailto:contact@oldquarter.example">contact@oldquarter.example</a><br>
+                <a href="/about">About the library</a>
+            </div>
+        </div>
+        <div class="container subfooter">
+            <small>&copy; The Old Quarter Public Library. Catalogue powered by <span class="mono">libsys</span> v2.4.1.</small>
+        </div>
+    </footer>
+</body>
+</html>

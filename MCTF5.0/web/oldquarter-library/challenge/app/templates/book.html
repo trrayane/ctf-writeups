@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ book.title }} &middot; {{ site_name }}{% endblock %}
+{% block content %}
+<article class="book-detail">
+    <div class="cover-large" data-genre="{{ book.genre }}">
+        <span class="cover-title">{{ book.title }}</span>
+        <span class="cover-author">{{ book.author }}</span>
+    </div>
+    <div class="book-info">
+        <h1>{{ book.title }}</h1>
+        <p class="author-line">by <strong>{{ book.author }}</strong> &middot; {{ book.year }}</p>
+        <ul class="book-facts">
+            <li><span>Genre</span><strong>{{ book.genre }}</strong></li>
+            <li><span>ISBN</span><strong class="mono">{{ book.isbn }}</strong></li>
+            <li><span>Borrowed</span><strong>{{ book.loan_count }} times</strong></li>
+            <li><span>Status</span>
+                {% if book.available %}
+                    <strong class="status-ok">On shelf</strong>
+                {% else %}
+                    <strong class="status-out">Currently out</strong>
+                {% endif %}
+            </li>
+        </ul>
+        <p class="description">{{ book.description }}</p>
+        <div class="actions">
+            <a class="btn" href="/login">Reserve a copy</a>
+            <a class="btn btn-ghost" href="/catalog?genre={{ book.genre }}">More {{ book.genre }} &rarr;</a>
+        </div>
+    </div>
+</article>
+
+{% if related %}
+<section class="row">
+    <header class="row-header"><h2>You might also like</h2></header>
+    <ul class="related">
+        {% for r in related %}
+        <li><a href="/book/{{ r.id }}"><strong>{{ r.title }}</strong> &middot; <em>{{ r.author }}</em></a></li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,27 @@
+challenge:
+  name: "BankruptMe"
+
+  author: "MahdiDbh"
+
+  category: web
+
+  difficulty: hard
+
+  description: You have access to CipherBank International's online portal. You start with 1,000 DA — reach 1,000,000 DA to unlock the VIP lounge and get the flag. No SQLi, no RCE, pure logic.
+
+  wave: 2
+
+  flags:
+    - { flag: "mctf{r4c3_c0nd1t10n_und3rfl0w_juggl1ng_ch41n}", case_sensitive: true }
+
+  need_deploy: true
+
+  links: []
+
+deploy:
+  subdomain: "bankruptme"
+  port: 10010
+  #   internal_port: 80 # Internal container port for dynamic instances
+  dynamic_instances: false # Whether this challenge uses dynamic instances
+  tcp: false
+  noSsl: false

@@ -1,0 +1,14 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - FLASK_ENV=production
+      - PORT=8000
+      - CTF_FLAG=mctf{k3y5tr0k35_b4tt13_w0n_1n_m1111s3c0nd55555}
+    ports:
+      - "${PORT_8000:-8000}:8000"
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.5

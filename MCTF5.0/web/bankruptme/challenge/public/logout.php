@@ -1,0 +1,7 @@
+<?php
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../src/Controllers/AuthController.php';
+
+(new AuthController())->logout();
+header('Location: /login.php');
+exit;

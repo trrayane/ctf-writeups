@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Opening hours &middot; {{ site_name }}{% endblock %}
+{% block content %}
+<header class="page-head">
+    <h1>Opening hours</h1>
+    <p class="muted">Closed on public holidays. The reading room closes thirty minutes before the library does.</p>
+</header>
+
+<table class="hours-table">
+    <tr class="closed"><td>Monday</td><td>Closed</td></tr>
+    <tr><td>Tuesday</td><td>09:00 &ndash; 19:00</td></tr>
+    <tr><td>Wednesday</td><td>09:00 &ndash; 19:00</td></tr>
+    <tr><td>Thursday</td><td>09:00 &ndash; 19:00</td></tr>
+    <tr><td>Friday</td><td>09:00 &ndash; 19:00</td></tr>
+    <tr><td>Saturday</td><td>10:00 &ndash; 17:00</td></tr>
+    <tr class="closed"><td>Sunday</td><td>Closed</td></tr>
+</table>
+
+<h2>Rare-books room</h2>
+<p class="muted">By appointment, Tuesday and Thursday afternoons. Please write to <a href="mailto:archives@oldquarter.example">archives@oldquarter.example</a> at least one week in advance.</p>
+
+<h2>Public holidays in 2026</h2>
+<p class="muted">1 January &middot; 6 April &middot; 1 May &middot; 8 May &middot; 14 July &middot; 15 August &middot; 1 November &middot; 11 November &middot; 25 December</p>
+{% endblock %}

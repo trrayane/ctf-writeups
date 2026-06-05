@@ -1,0 +1,129 @@
+.navbar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  width: 100%;
+  border-bottom: 1px solid var(--border);
+  background: rgba(17, 26, 20, 0.92);
+  backdrop-filter: blur(12px);
+}
+
+.navbar__inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 64px;
+}
+
+.navbar__brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+
+.navbar__brand-primary {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.navbar__brand-secondary {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.navbar__links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.navbar__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 4px;
+}
+
+.navbar__action {
+  min-width: 98px;
+  text-align: center;
+}
+
+.navbar__link {
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.navbar__link:hover {
+  color: var(--accent-dim);
+}
+
+.navbar__link--active {
+  color: var(--accent);
+}
+
+.navbar__toggle {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  border-radius: var(--radius);
+  color: var(--text);
+}
+
+.navbar__toggle span {
+  width: 24px;
+  height: 2px;
+  background: currentColor;
+  transition: var(--transition);
+}
+
+@media (max-width: 767px) {
+  .navbar__toggle {
+    display: inline-flex;
+  }
+
+  .navbar__links {
+    position: absolute;
+    top: 64px;
+    right: 24px;
+    left: 24px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 16px 24px 24px;
+    border: 1px solid var(--border);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    background: var(--surface);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-16px);
+  }
+
+  .navbar__links.is-open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .navbar__link {
+    width: 100%;
+    padding: 8px 0;
+  }
+
+  .navbar__actions {
+    width: 100%;
+    margin-top: 8px;
+    margin-left: 0;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .navbar__action {
+    width: 100%;
+  }
+}
